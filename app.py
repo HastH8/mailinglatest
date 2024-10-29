@@ -12,7 +12,6 @@ def calculate_mail_cost(mass):
     elif mass <= 100:
         return 70
     else:
-        # For mass over 100 grams:
         extra_weight = mass - 100
         additional_cost = ((extra_weight + 49) // 50) * 25
         return 70 + additional_cost
