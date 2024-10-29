@@ -5,9 +5,6 @@ app = Flask(__name__)
 
 
 def calculate_mail_cost(mass):
-    """
-    Calculates the mailing cost based on weight in grams.
-    """
     if mass <= 30:
         return 40
     elif mass <= 50:
@@ -25,12 +22,10 @@ def index():
     cost = None
     if request.method == "POST":
         try:
-            # Get the mass input from the form
             mass = float(request.form.get("mass"))
             if mass < 0:
                 cost = "Invalid mass. Please enter a non-negative value."
             else:
-                # Calculate cost
                 cost = calculate_mail_cost(mass)
                 cost = f"The cost to mail a letter weighing {mass} grams is {cost} sinas."
         except ValueError:
@@ -39,6 +34,5 @@ def index():
     return render_template("index.html", cost=cost)
 
 if __name__ == "__main__":
-    # Use the PORT environment variable if defined, otherwise default to 5000
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
