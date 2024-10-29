@@ -639,28 +639,3 @@ object-fit: cover;
   color: #ffffff !important;
   text-decoration: none; 
 }
-
-.qr-code-section {
-  margin-top: 1.5rem;
-  text-align: center;
-}
-
-.qr-code-section img {
-  width: 150px;
-  height: 150px;
-  margin-top: 1rem;
-}
-.tutorial-button {
-  background-color: #0077b6;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 10px 0;
-}
-
-.tutorial-button:hover {
-  background-color: #006aa4;
-}
-

@@ -53,17 +53,10 @@ function startTutorial() {
 
 document.addEventListener("DOMContentLoaded", function () {
   const notification = document.querySelector(".notification");
-  const qrSection = document.querySelector(".qr-code-section");
-
   if (notification) {
     setTimeout(() => {
       notification.style.display = "none";
     }, 15000); 
   }
 
-  if (qrSection) {
-    setTimeout(() => {
-      qrSection.style.display = "none";
-    }, 15000); 
-  }
 });

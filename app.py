@@ -2,7 +2,6 @@ import os
 import csv
 import requests
 import click 
-import qrcode
 import base64
 import io
 from io import BytesIO
@@ -54,20 +53,6 @@ class History(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-def generate_qr_code(data):
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,
-    )
-    qr.add_data(data)
-    qr.make(fit=True)
-    qr_path = os.path.join("static", "qr_codes", f"{data}.png")  
-    os.makedirs(os.path.dirname(qr_path), exist_ok=True)   
-    img = qr.make_image(fill="black", back_color="white")
-    img.save(qr_path) 
-    return url_for("static", filename=f"qr_codes/{data}.png")
 
 def convert_to_grams(mass, unit):
     conversion_factors = {"grams": 1, 
@@ -111,7 +96,7 @@ def convert_currency(amount, target_currency):
 def index():
     cost, message, breakdown_detail, converted_breakdown = None, None, [], []
     currency = "Sinas"
-    qr_code = None
+
     
     if request.method == "POST":
         try:
@@ -138,19 +123,11 @@ def index():
                 )
                 db.session.add(history_entry)
                 db.session.commit()
-                qr_data = f"Calculation cost: {cost}, Breakdown: {breakdown_detail}"
-                qr_code = generate_qr_code(qr_data)
         except ValueError:
             message = "Invalid input. Please enter a numeric value for weight."
 
     history = History.query.filter_by(user_id=current_user.id).all()
-    return render_template("index.html", cost=cost, message=message, history=history, breakdown=converted_breakdown, currency=currency, qr_code=qr_code)
-
-@app.route("/download_breakdown")
-def download_breakdown():
-    breakdown_data = session.get("latest_qr_code", "No breakdown available")
-    image = create_breakdown_image(breakdown_data)
-    return send_file(image, as_attachment=True, download_name="cost_breakdown.png")
+    return render_template("index.html", cost=cost, message=message, history=history, breakdown=converted_breakdown, currency=currency)
 
 def create_breakdown_image(breakdown_text):
     font = ImageFont.load_default()
@@ -313,4 +290,4 @@ with app.app_context():
     db.create_all()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5500)
+    app.run(host="0.0.0.0", port=8080)

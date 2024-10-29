@@ -63,14 +63,6 @@
       <div class="notification success">{{ cost }}</div>
       <button type="button" onclick="openModal()" class="view-breakdown-button">View Cost Breakdown</button>
     {% endif %}
-
-    {% if qr_code %}
-    <div class="qr-code-section">
-      <h3>Your QR Code</h3>
-      <img src="{{ qr_code }}" alt="QR Code">
-      <p>Scan to download the cost breakdown</p>
-    </div>
-    {% endif %}
   
     {% if history %}
       <div class="history-section">
