@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mailing Cost Calculator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Rahmania Mailing Cost Calculator</h1>
+    <p>Enter the weight of your letter to calculate the mailing cost.</p>
+  </header>
+  
+  <main>
+    <form method="POST">
+      <label for="mass">Letter Weight (grams):</label>
+      <input type="text" id="mass" name="mass" required>
+      <button type="submit">Calculate Cost</button>
+    </form>
+
+    {% if cost %}
+      <div class="result">
+        <p>{{ cost }}</p>
+      </div>
+    {% endif %}
+  </main>
+
+  <footer>
+    <p>Rahmania Postal Service &copy; 2024</p>
+  </footer>
+</body>
+</html>
