@@ -6,9 +6,17 @@
   <title>Mailing Cost Calculator</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body onload="hideNotification()">
+<body onload="applyTheme(); hideNotification()">
   <header>
-    <h1>Rahmania Mailing Cost Calculator</h1>
+    <div class="header-content">
+      <div class="header-title">
+        <h1>Rahmania Mailing Cost Calculator</h1>
+      </div>
+      <label class="theme-switch">
+        <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+        <span class="slider"></span>
+      </label>
+    </div>
     <p>Calculate mailing costs in various currencies with weight conversions.</p>
   </header>
   
@@ -16,32 +24,72 @@
     <form method="POST">
       <label for="mass">Enter Weight:</label>
       <input type="text" id="mass" name="mass" required>
-
+  
       <label for="unit">Select Weight Unit:</label>
-      <select name="unit" id="unit">
-        <option value="grams">Grams</option>
-        <option value="kilograms">Kilograms</option>
-        <option value="ounces">Ounces</option>
-        <option value="pounds">Pounds</option>
+      <select name="unit" id="unit" class="dropdown">
+        <option value="grams" {% if request.form.get('unit') == 'grams' %}selected{% endif %}>Grams</option>
+        <option value="kilograms" {% if request.form.get('unit') == 'kilograms' %}selected{% endif %}>Kilograms</option>
+        <option value="ounces" {% if request.form.get('unit') == 'ounces' %}selected{% endif %}>Ounces</option>
+        <option value="pounds" {% if request.form.get('unit') == 'pounds' %}selected{% endif %}>Pounds</option>
       </select>
-
+  
       <label for="currency">Select Currency:</label>
-      <select name="currency" id="currency">
-        <option value="TRY">TRY (Turkish Lira - Sinas)</option>
-        <option value="USD">USD</option>
-        <option value="EUR">EUR</option>
-        <option value="GBP">GBP</option>
+      <select name="currency" id="currency" class="dropdown">
+        <option value="TRY" {% if request.form.get('currency') == 'TRY' %}selected{% endif %}>Sinas</option>
+        <option value="USD" {% if request.form.get('currency') == 'USD' %}selected{% endif %}>USD</option>
+        <option value="EUR" {% if request.form.get('currency') == 'EUR' %}selected{% endif %}>EUR</option>
+        <option value="GBP" {% if request.form.get('currency') == 'GBP' %}selected{% endif %}>GBP</option>
       </select>
-
-      <button type="submit">Calculate Cost</button>
+  
+      <button type="submit" class="calculate-button">Calculate Cost</button>
     </form>
-
+  
     {% if message %}
       <div class="notification error">{{ message }}</div>
     {% elif cost %}
       <div class="notification success">{{ cost }}</div>
+      <button type="button" onclick="openModal()" class="view-breakdown-button">View Cost Breakdown</button>
+    {% endif %}
+  
+    {% if history %}
+      <div class="history-section">
+        <h3>Calculation History</h3>
+        <ul class="history-list">
+          {% for entry in history %}
+            <li>{{ entry['weight'] }} - {{ entry['cost'] }}</li>
+          {% endfor %}
+        </ul>
+        <form action="{{ url_for('clear_history') }}" method="POST">
+          <button type="submit" class="clear-history-button">Clear History</button>
+        </form>
+        <a href="{{ url_for('export_csv') }}" class="export-csv-button">Export History to CSV</a>
+      </div>
     {% endif %}
   </main>
+  
+  <!-- Modal for Cost Breakdown with Table Display -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h3 class="breakdownheader">Cost Breakdown</h3>
+      <table class="breakdown-table">
+        <thead>
+          <tr>
+            <th>Weight Segment</th>
+            <th>Cost ({{ currency }})</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in breakdown %}
+            <tr>
+              <td>{{ item[0] }}</td>
+              <td>{{ item[1] }} {{ currency }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
   <footer>
     <p>Rahmania Postal Service &copy; 2024</p>
