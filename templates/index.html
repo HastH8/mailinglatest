@@ -6,30 +6,48 @@
   <title>Mailing Cost Calculator</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body onload="hideNotification()">
   <header>
     <h1>Rahmania Mailing Cost Calculator</h1>
-    <p>Enter the weight of your letter to calculate the mailing cost.</p>
+    <p>Calculate mailing costs in various currencies with weight conversions.</p>
   </header>
   
   <main>
     <form method="POST">
-      <label for="mass">Letter Weight (grams):</label>
+      <label for="mass">Enter Weight:</label>
       <input type="text" id="mass" name="mass" required>
+
+      <label for="unit">Select Weight Unit:</label>
+      <select name="unit" id="unit">
+        <option value="grams">Grams</option>
+        <option value="kilograms">Kilograms</option>
+        <option value="ounces">Ounces</option>
+        <option value="pounds">Pounds</option>
+      </select>
+
+      <label for="currency">Select Currency:</label>
+      <select name="currency" id="currency">
+        <option value="TRY">TRY (Turkish Lira - Sinas)</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="GBP">GBP</option>
+      </select>
+
       <button type="submit">Calculate Cost</button>
     </form>
 
-    {% if cost %}
-      <div class="result">
-        <p>{{ cost }}</p>
-      </div>
+    {% if message %}
+      <div class="notification error">{{ message }}</div>
+    {% elif cost %}
+      <div class="notification success">{{ cost }}</div>
     {% endif %}
   </main>
 
   <footer>
     <p>Rahmania Postal Service &copy; 2024</p>
-    <p> Made By: Hast K.</p>
+    <p>Made By: Hast K.</p>
   </footer>
+
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
