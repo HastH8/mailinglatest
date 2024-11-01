@@ -5,10 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mailing Cost Calculator</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
-<body onload="applyTheme(); hideNotification()">
+<body onload="applyTheme()">
   <header>
     <div class="header-content">
+      <div class="profile-section">
+        <img src="{{ url_for('static', filename=current_user.profile_pic or 'default-profile.png') }}" alt="Profile Picture" class="profile-pic" onclick="toggleProfileMenu()">
+        <div id="profile-menu" class="profile-menu">
+          <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
+          <a href="{{ url_for('update_password') }}">Change Password</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+          {% if current_user.is_admin %}
+          <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+          {% endif %}
+        </div>
+      </div>
+      
       <div class="header-title">
         <h1>Rahmania Mailing Cost Calculator</h1>
       </div>
@@ -19,8 +32,8 @@
     </div>
     <p>Calculate mailing costs in various currencies with weight conversions.</p>
   </header>
-  
-  <main>
+
+  <main class="container">
     <form method="POST">
       <label for="mass">Enter Weight:</label>
       <input type="text" id="mass" name="mass" required>
@@ -35,7 +48,7 @@
   
       <label for="currency">Select Currency:</label>
       <select name="currency" id="currency" class="dropdown">
-        <option value="TRY" {% if request.form.get('currency') == 'TRY' %}selected{% endif %}>Sinas</option>
+        <option value="Sinas" {% if request.form.get('currency') == 'Sinas' %}selected{% endif %}>Sinas</option>
         <option value="USD" {% if request.form.get('currency') == 'USD' %}selected{% endif %}>USD</option>
         <option value="EUR" {% if request.form.get('currency') == 'EUR' %}selected{% endif %}>EUR</option>
         <option value="GBP" {% if request.form.get('currency') == 'GBP' %}selected{% endif %}>GBP</option>
@@ -49,6 +62,14 @@
     {% elif cost %}
       <div class="notification success">{{ cost }}</div>
       <button type="button" onclick="openModal()" class="view-breakdown-button">View Cost Breakdown</button>
+    {% endif %}
+
+    {% if qr_code %}
+    <div class="qr-code-section">
+      <h3>Your QR Code</h3>
+      <img src="{{ qr_code }}" alt="QR Code">
+      <p>Scan to download the cost breakdown</p>
+    </div>
     {% endif %}
   
     {% if history %}
@@ -67,7 +88,6 @@
     {% endif %}
   </main>
   
-  <!-- Modal for Cost Breakdown with Table Display -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>

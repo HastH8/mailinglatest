@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Change Username</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="back-container">
+        <a href="{{ url_for('index') }}" class="back-button">&larr; Back to Home</a>
+    </div>
+    <h1>Change Username</h1>
+  </header>
+  
+  <main class="auth-container">
+    <form method="POST">
+      <label for="username">New Username:</label>
+      <input type="text" id="username" name="username" required>
+      <button type="submit" class="auth-button">Update Username</button>
+    </form>
+  </main>
+</body>
+</html>

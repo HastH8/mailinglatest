@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin_dashboard.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <a href="{{ url_for('index') }}">Back to Home</a>
+    </header>
+
+    <div class="container">
+        <section>
+            <h2>Site Statistics</h2>
+            <div class="stats-container">
+                <div class="stats-card">
+                    <p>{{ user_count }}</p>
+                    <span>Total Users</span>
+                </div>
+                <div class="stats-card">
+                    <p>{{ total_calculations }}</p>
+                    <span>Total Calculations</span>
+                </div>
+            </div>
+        </section>
+        
+        
+
+        <section>
+            <h2>User Management</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Admin Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            <input type="text" name="username" placeholder="Change Username" value="{{ user.username }}" style="width: 100%;">
+                        </td>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="is_admin" {% if user.is_admin %}checked{% endif %}> Admin
+                            </label>
+                        </td>
+                        <td class="action-buttons">
+                            <form action="{{ url_for('edit_user', user_id=user.id) }}" method="POST" style="display: inline;">
+                                <button type="submit">Save</button>
+                            </form>
+                            <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST" style="display: inline;">
+                                <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+               
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const body = document.body;
+            const toggleButton = document.createElement("button");
+            toggleButton.classList.add("dark-toggle");
+            toggleButton.innerText = "Toggle Dark Mode";
+            document.body.appendChild(toggleButton);
+
+            const darkMode = localStorage.getItem("dark-mode");
+            if (darkMode === "enabled") {
+                enableDarkMode();
+            }
+
+            toggleButton.addEventListener("click", () => {
+                if (body.classList.contains("dark-mode")) {
+                    disableDarkMode();
+                } else {
+                    enableDarkMode();
+                }
+            });
+
+            function enableDarkMode() {
+                body.classList.add("dark-mode");
+                document.querySelectorAll("*").forEach((el) => el.classList.add("dark-mode"));
+                localStorage.setItem("dark-mode", "enabled");
+            }
+
+            function disableDarkMode() {
+                body.classList.remove("dark-mode");
+                document.querySelectorAll("*").forEach((el) => el.classList.remove("dark-mode"));
+                localStorage.setItem("dark-mode", "disabled");
+            }
+        });
+    </script>
+</body>
+</html>

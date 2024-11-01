@@ -32,5 +32,38 @@ function hideNotification() {
       closeModal();
     }
   });
-  
-  
+
+  function toggleProfileMenu() {
+    const menu = document.getElementById("profile-menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+window.addEventListener("click", function(event) {
+    const menu = document.getElementById("profile-menu");
+    const profilePic = document.querySelector(".profile-pic");
+
+    if (event.target !== menu && event.target !== profilePic && !menu.contains(event.target)) {
+        menu.style.display = "none";
+    }
+});
+
+function startTutorial() {
+  introJs().start();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const notification = document.querySelector(".notification");
+  const qrSection = document.querySelector(".qr-code-section");
+
+  if (notification) {
+    setTimeout(() => {
+      notification.style.display = "none";
+    }, 15000); 
+  }
+
+  if (qrSection) {
+    setTimeout(() => {
+      qrSection.style.display = "none";
+    }, 15000); 
+  }
+});
